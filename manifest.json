@@ -6,9 +6,7 @@
 	"author": "Brent Klein",
 	"permissions": [
 		"activeTab",
-		"http://fuzzylogicinc.net/boggle/*",
-		"https://www.google.com/",
-		"http://www.google.com/"
+		"http://fuzzylogicinc.net/boggle/*"
 	],
 	"browser_action": {
 		"default_icon": "icon.png"
