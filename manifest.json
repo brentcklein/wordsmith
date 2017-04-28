@@ -1,17 +1,20 @@
 {
 	"manifest_version": 2,
 	"name": "Wordsmith",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Automatically finds and enters all available words on Wordsplay.net",
 	"author": "Brent Klein",
 	"permissions": [
-		"activeTab"
+		"activeTab",
+		"http://fuzzylogicinc.net/boggle/*",
+		"https://www.google.com/",
+		"http://www.google.com/"
 	],
-	"browser_actions": {
+	"browser_action": {
 		"default_icon": "icon.png"
 	},
 	"background": {
-		"scripts": ["smith.js"],
+		"scripts": ["background.js"],
 		"persistent": false
 	}
 }
