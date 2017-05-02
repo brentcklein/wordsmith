@@ -1,12 +1,10 @@
-var iframe    = document.getElementsByName('main')[0], 
-                /* or other kind of reference to the iframe DOM node */
+var iframe    = document.getElementsByName('main')[0],
 
     iframeDoc = ((!!iframe['contentDocument']) 
               ? iframe.contentDocument 
               : iframe.contentWindow.document),
 
     board     = iframeDoc.getElementById('b4x4'),
-                /* this is a reference to cell inside the iframe */
     input	  = iframeDoc.getElementById('input');
     button	  = iframeDoc.getElementById('ext-gen207');
 
@@ -29,18 +27,48 @@ for (var i = 0; i <= rows.length - 1; i++) {
 var boardString = letters.join('');
 
 console.log('fetching solutions for board: ' + boardString);
-chrome.runtime.sendMessage({string: boardString}, function (response) {
+var port = chrome.runtime.connect({name: "connection"});
+port.postMessage({string: boardString});
+port.onMessage.addListener(function(response) {
 	if (response.success) {
-		var word;
-		for (var i = response.data.Solutions.length - 1; i >= response.data.Solutions.length; i--) {
+		console.log(response.data.Solutions.length + ' solutions found');
+		var word, count = 0;
+		shuffle(response.data.Solutions);
+		for (var i = 0; i <= (response.data.Solutions.length * response.mode) - 1 ; i++) {
+			count++;
 			word = response.data.Solutions[i].Word;
-			console.log('setting input to ' + word);
 			input.value = word;
-			console.log('submitting form');
 			eventFire(button, 'click');
 		}
+		console.log(count + ' answers entered');
+		port.postMessage({done: true});
 	}
 });
+
+// chrome.runtime.sendMessage({string: boardString}, function (response) {
+// 	if (response.success) {
+// 		console.log(response.data.Solutions.length + ' solutions found');
+// 		var word, count = 0;
+// 		shuffle(response.data.Solutions);
+// 		for (var i = 0; i <= (response.data.Solutions.length * response.mode) - 1 ; i++) {
+// 			count++;
+// 			word = response.data.Solutions[i].Word;
+// 			input.value = word;
+// 			eventFire(button, 'click');
+// 		}
+// 		console.log(count + ' answers entered');
+// 	}
+// });
+
+function shuffle(a) {
+    var j, x, i, l;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
 
 function eventFire(el, etype){
   if (el.fireEvent) {
